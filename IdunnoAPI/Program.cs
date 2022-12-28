@@ -1,3 +1,5 @@
+using IdunnoAPI.Data;
+
 namespace IdunnoAPI
 {
     public class Program
@@ -12,7 +14,7 @@ namespace IdunnoAPI
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
-
+            builder.Services.AddTransient(x => new MySqlDbContext(builder.Configuration["ConnectionStrings:DefaultConnection"]));
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
