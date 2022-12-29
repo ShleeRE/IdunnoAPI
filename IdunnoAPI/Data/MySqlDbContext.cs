@@ -4,7 +4,7 @@ namespace IdunnoAPI.Data
 {
     public class MySqlDbContext : IDisposable
     {
-        MySqlConnection conn { get; }
+        public MySqlConnection conn { get; }
 
 
         public MySqlDbContext(string connectionStr)

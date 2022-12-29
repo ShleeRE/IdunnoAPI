@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using IdunnoAPI.Data;
+using IdunnoAPI.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace IdunnoAPI.Controllers
@@ -7,10 +9,25 @@ namespace IdunnoAPI.Controllers
     [ApiController]
     public class PostsController : ControllerBase
     {
-        [HttpGet]
-        public string Get()
+        private readonly MySqlDbContext _context;
+
+        private PostsManager pm;
+
+        public PostsController(MySqlDbContext context)
         {
-            return "get method";
+            _context = context;
+
+            pm = new PostsManager(_context);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetAsync()
+        {
+            List<Post> posts = await pm.GetPostsAsync();
+
+            if(posts.Count == 0) { return NoContent(); }
+
+            return Ok(posts);
         }
 
         [Route("Add")]
