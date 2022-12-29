@@ -21,7 +21,8 @@ namespace IdunnoAPI.Data
             {
                 await _context.conn.OpenAsync();
 
-                MySqlCommand cmd = new MySqlCommand("USE idunnodb; SELECT * FROM Posts;", _context.conn);
+                using MySqlCommand cmd = _context.conn.CreateCommand();
+                cmd.CommandText = "USE idunnodb; SELECT * FROM Posts;";
 
                 await using MySqlDataReader reader = await cmd.ExecuteReaderAsync();
 
@@ -47,6 +48,32 @@ namespace IdunnoAPI.Data
             }
 
             return posts;
+        }
+        public async Task<Post> AddPostAsync(Post toBeAdded)
+        {
+            try
+            {
+                Console.WriteLine("test");
+                await _context.conn.OpenAsync();
+                using MySqlCommand cmd = _context.conn.CreateCommand();
+                cmd.CommandText = @$"USE idunnodb; INSERT INTO Posts VALUES ({toBeAdded.PostID}," +
+                    $"{toBeAdded.UserID}, '{toBeAdded.PostDate}', '{toBeAdded.PostTitle}', '{toBeAdded.PostDescription}', '{toBeAdded.ImagePath}');";
+
+                Console.WriteLine(cmd.CommandText);
+
+                if(await cmd.ExecuteNonQueryAsync() == -1)
+                {
+                    return null;
+                }
+
+                await _context.conn.CloseAsync();
+            }
+            catch(Exception ex)
+            {
+                return null;
+            }
+
+            return toBeAdded;
         }
 
     }

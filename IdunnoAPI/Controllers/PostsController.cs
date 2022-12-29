@@ -20,8 +20,9 @@ namespace IdunnoAPI.Controllers
             pm = new PostsManager(_context);
         }
 
+        [Route("GetPosts")]
         [HttpGet]
-        public async Task<IActionResult> GetAsync()
+        public async Task<ActionResult> GetAsync()
         {
             List<Post> posts = await pm.GetPostsAsync();
 
@@ -32,9 +33,16 @@ namespace IdunnoAPI.Controllers
 
         [Route("Add")]
         [HttpPost]
-        public void Add(int opId, string postDescription, string imagePath)
+        public async Task<ActionResult> AddAsync(Post post)
         {
+            if(await pm.AddPostAsync(post) != null)
+            {
+                return Ok(post);
+            }
 
+            return BadRequest("Error, couldn't add");
+
+           
         }
     }
 }
