@@ -26,7 +26,7 @@ namespace IdunnoAPI.Controllers
         {
             List<Post> posts = await pm.GetPostsAsync();
 
-            if(posts.Count == 0) { return NoContent(); }
+            if(posts.Count == 0) { return NotFound(); }
 
             return Ok(posts);
         }
@@ -35,14 +35,26 @@ namespace IdunnoAPI.Controllers
         [HttpPost]
         public async Task<ActionResult> AddAsync(Post post)
         {
-            if(await pm.AddPostAsync(post) != null)
+            if(await pm.AddPostAsync(post))
             {
-                return Ok(post);
+                return NoContent();
             }
 
             return BadRequest("Error, couldn't add");
 
            
+        }
+        [Route("Delete")]
+        [HttpPost]
+        public async Task<ActionResult> DeleteAsync(int postID)
+        {
+            if (await pm.DeletePostAsync(postID))
+            {
+                return NoContent();
+            }
+
+            return BadRequest("Error, couldn't delete");
+
         }
     }
 }
