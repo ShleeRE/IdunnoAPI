@@ -20,9 +20,8 @@ namespace IdunnoAPI.Controllers
             pm = new PostsManager(_context);
         }
 
-        [Route("GetPosts")]
         [HttpGet]
-        public async Task<ActionResult> GetAsync()
+        public async Task<ActionResult> GetAllAsync()
         {
             List<Post> posts = await pm.GetPostsAsync();
 
@@ -30,6 +29,18 @@ namespace IdunnoAPI.Controllers
 
             return Ok(posts);
         }
+
+        [Route("GetById")]
+        [HttpGet]
+        public async Task<ActionResult> GetByIdAsync(int postID)
+        {
+            Post post = await pm.GetPostByIdAsync(postID);
+
+            if (post == null) { return NotFound(); }
+
+            return Ok(post);
+        }
+
 
         [Route("Add")]
         [HttpPost]
@@ -54,6 +65,19 @@ namespace IdunnoAPI.Controllers
             }
 
             return BadRequest("Error, couldn't delete");
+
+        }
+
+        [Route("Update")]
+        [HttpPost]
+        public async Task<ActionResult> UpdateAsync(int postID, string postTitle, string postDescription, string imagePath)
+        {
+            if (await pm.UpdatePostAsync(postID, postTitle, postDescription, imagePath))
+            {
+                return NoContent();
+            }
+
+            return BadRequest("Error, couldn't update");
 
         }
     }
