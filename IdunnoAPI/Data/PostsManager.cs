@@ -13,7 +13,8 @@ namespace IdunnoAPI.Data
             _context = context;
         }
 
-        public async Task<List<Post>> GetPostsAsync()
+        /// <summary> postID's are signed and cannot be null -> query will be modified if this is any different
+        public async Task<List<Post>> GetPostsAsync(int? postID = null) 
         {
             List<Post> posts = new List<Post>();
             Post temp = new Post();
@@ -23,7 +24,16 @@ namespace IdunnoAPI.Data
                 await _context.conn.OpenAsync();
 
                 using MySqlCommand cmd = _context.conn.CreateCommand();
-                cmd.CommandText = "USE idunnodb; SELECT PostID, UserID, date_format(PostDate, '%Y-%m-%e %H:%i') as PostDate, PostTitle, PostDescription, ImagePath from Posts;";
+                cmd.CommandText = "USE idunnodb; " +
+                    "SELECT PostID, UserID, date_format(PostDate, '%Y-%m-%e %H:%i') as PostDate, PostTitle, PostDescription, ImagePath " +
+                    "FROM Posts";
+
+                if(postID != null)
+                {
+                    cmd.CommandText += $" WHERE PostID = '{postID}'";
+                }
+
+                cmd.CommandText += ";"; 
 
                 await using MySqlDataReader reader = await cmd.ExecuteReaderAsync();
 
@@ -51,39 +61,6 @@ namespace IdunnoAPI.Data
             return posts;
         }
 
-        public async Task<Post> GetPostByIdAsync(int postID)
-        {
-            Post post = new Post();
-
-            try
-            {
-                await _context.conn.OpenAsync();
-
-                using MySqlCommand cmd = _context.conn.CreateCommand();
-                cmd.CommandText = $"USE idunnodb; SELECT PostID, UserID, date_format(PostDate, '%Y-%m-%e %H:%i') as PostDate, PostTitle, PostDescription, ImagePath from Posts " +
-                    $"WHERE PostID = '{postID}'";
-
-                await using MySqlDataReader reader = await cmd.ExecuteReaderAsync();
-
-                while (await reader.ReadAsync())
-                {
-                    post.PostID = (int)reader[0];
-                    post.UserID = (int)reader[1];
-                    post.PostDate = reader[2].ToString();
-                    post.PostTitle = reader[3].ToString();
-                    post.PostDescription = reader[4].ToString();
-                    post.ImagePath = reader[5].ToString();
-                }
-
-                await _context.conn.CloseAsync();
-            }
-            catch (Exception ex)
-            {
-                return null;
-            }
-
-            return post;
-        }
         public async Task<bool> AddPostAsync(Post toBeAdded)
         {
             try
@@ -133,15 +110,17 @@ namespace IdunnoAPI.Data
             return true;
         }
 
-        public async Task<bool> UpdatePostAsync(int postID, string postTitle, string postDescription, string imagePath)
+        public async Task<bool> UpdatePostAsync(int postID, Post post)
         {
             try
             {
                 await _context.conn.OpenAsync();
                 using MySqlCommand cmd = _context.conn.CreateCommand();
+
+
                 cmd.CommandText = $"USE idunnodb; " +
                     $"UPDATE Posts " +
-                    $"SET PostTitle = '{postTitle}', PostDescription = '{postDescription}', ImagePath = '{imagePath}'" +
+                    $"SET PostTitle = '{post.PostTitle}', PostDescription = '{post.PostDescription}', ImagePath = '{post.ImagePath}'" +
                     $"WHERE PostID = '{postID}'";
 
                 if (await cmd.ExecuteNonQueryAsync() == -1)

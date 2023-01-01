@@ -25,59 +25,58 @@ namespace IdunnoAPI.Controllers
         {
             List<Post> posts = await pm.GetPostsAsync();
 
-            if(posts.Count == 0) { return NotFound(); }
+            if(posts.Count == 0) { return StatusCode(500); } // INTERNAL SERVER ERROR
 
             return Ok(posts);
         }
 
-        [Route("GetById")]
+        [Route("{postID}")]
         [HttpGet]
-        public async Task<ActionResult> GetByIdAsync(int postID)
+        public async Task<ActionResult> GetByIdAsync([FromRoute]int postID)
         {
-            Post post = await pm.GetPostByIdAsync(postID);
+            List<Post> posts = await pm.GetPostsAsync(postID);
 
-            if (post == null) { return NotFound(); }
+            if (posts.Count == 0) { return NotFound(); }
 
-            return Ok(post);
+            return Ok(posts[0]);
         }
 
 
-        [Route("Add")]
         [HttpPost]
-        public async Task<ActionResult> AddAsync(Post post)
+        public async Task<ActionResult> AddAsync([FromBody]Post post)
         {
             if(await pm.AddPostAsync(post))
             {
-                return NoContent();
+                return Created($"/Posts/{post.PostID}", post); // CreatedResult - 201 Status Code with created resource in response body.
             }
 
-            return BadRequest("Error, couldn't add");
-
-           
+            return StatusCode(500); // INTERNAL SERVER ERROR
         }
-        [Route("Delete")]
+
+        [Route("{postID}")]
         [HttpPost]
-        public async Task<ActionResult> DeleteAsync(int postID)
+        public async Task<ActionResult> DeleteAsync([FromRoute]int postID)
         {
             if (await pm.DeletePostAsync(postID))
             {
                 return NoContent();
             }
 
-            return BadRequest("Error, couldn't delete");
+            return StatusCode(500); // INTERNAL SERVER ERROR
 
         }
 
-        [Route("Update")]
-        [HttpPost]
-        public async Task<ActionResult> UpdateAsync(int postID, string postTitle, string postDescription, string imagePath)
+
+        [Route("{postID}")]
+        [HttpPatch]
+        public async Task<ActionResult> UpdateAsync([FromRoute] int postID, [FromBody] Post post)
         {
-            if (await pm.UpdatePostAsync(postID, postTitle, postDescription, imagePath))
+            if (await pm.UpdatePostAsync(postID, post))
             {
                 return NoContent();
             }
 
-            return BadRequest("Error, couldn't update");
+            return StatusCode(500); // INTERNAL SERVER ERROR
 
         }
     }
