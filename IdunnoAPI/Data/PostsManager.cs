@@ -13,6 +13,36 @@ namespace IdunnoAPI.Data
             _context = context;
         }
 
+
+        public async Task<int?> GetNextPostIdAsync()
+        {
+            int? retID = null;
+
+            try
+            {
+                await _context.conn.OpenAsync();
+                using MySqlCommand cmd = _context.conn.CreateCommand();
+                cmd.CommandText = $"USE idunnodb; " +
+                    $"SELECT COUNT(*) " +
+                    $"FROM Posts;";
+
+                await using MySqlDataReader reader = await cmd.ExecuteReaderAsync();
+
+                await reader.ReadAsync();
+
+                retID = reader.GetInt32(0);
+
+                await _context.conn.CloseAsync();
+
+                return retID + 1;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
+
         /// <summary> postID's are signed and cannot be null -> query will be modified if this is any different
         public async Task<List<Post>> GetPostsAsync(int? postID = null) 
         {
@@ -65,11 +95,18 @@ namespace IdunnoAPI.Data
         {
             try
             {
+                int? nextPostID = await GetNextPostIdAsync();
+
+                if(nextPostID == null)
+                {
+                    return false;
+                }
+
                 await _context.conn.OpenAsync();
                 using MySqlCommand cmd = _context.conn.CreateCommand();
                 cmd.CommandText = $"USE idunnodb; " +
                     $"INSERT INTO Posts " +
-                    $"VALUES ({toBeAdded.PostID}, {toBeAdded.UserID}, '{toBeAdded.PostDate}', '{toBeAdded.PostTitle}', '{toBeAdded.PostDescription}', '{toBeAdded.ImagePath}');";
+                    $"VALUES ({nextPostID}, {toBeAdded.UserID}, '{toBeAdded.PostDate}', '{toBeAdded.PostTitle}', '{toBeAdded.PostDescription}', '{toBeAdded.ImagePath}');";
 
                 if(await cmd.ExecuteNonQueryAsync() == -1)
                 {
