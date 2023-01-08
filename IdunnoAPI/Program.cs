@@ -1,4 +1,5 @@
 using IdunnoAPI.Data;
+using IdunnoAPI.Extensions;
 
 namespace IdunnoAPI
 {
@@ -18,28 +19,26 @@ namespace IdunnoAPI
 
             if (builder.Environment.IsDevelopment()) // allowing Idunno project to access API in development.
             {
-                builder.Services.AddCors(options =>
-                {
-                    options.AddPolicy(name: "_myAllowSpecificOrigins", policy => { policy.WithOrigins("http://localhost:3000"); });
-                });
+                builder.Services.ConfigureCors();
             }
 
-            
+            builder.Services.AddAuth(builder.Configuration);
 
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
-                app.UseCors("_myAllowSpecificOrigins");
+                app.UseCors(ServiceExtensions.policyName);
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
 
             app.UseHttpsRedirection();
+
+            app.UseAuthentication();
             
             app.UseAuthorization();
-
 
             app.MapControllers();
 

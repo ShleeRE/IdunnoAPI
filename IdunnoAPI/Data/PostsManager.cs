@@ -1,5 +1,4 @@
 ﻿using IdunnoAPI.Models;
-using Microsoft.Extensions.Hosting;
 using MySqlConnector;
 
 namespace IdunnoAPI.Data
