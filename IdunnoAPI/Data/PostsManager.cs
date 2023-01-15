@@ -2,6 +2,7 @@
 using IdunnoAPI.Helpers;
 using IdunnoAPI.Models;
 using MySqlConnector;
+using System.Reflection.Metadata.Ecma335;
 
 namespace IdunnoAPI.Data
 {
@@ -86,22 +87,26 @@ namespace IdunnoAPI.Data
             }
             catch (Exception ex)
             {
-                return Enumerable.Empty<Post>().ToList();
+                return null;
             }
 
             return posts;
         }
 
-        public async Task<bool> AddPostAsync(Post toBeAdded)
+        public async Task<ValidationResult> AddPostAsync(Post toBeAdded)
         {
+            ValidationResult ret = new ValidationResult();
+
             try
             {
                 int? nextPostID = await GetNextPostIdAsync();
 
                 if(nextPostID == null)
                 {
-                    return false;
+                    return ret.RetInternelServerError();
                 }
+
+                toBeAdded.PostID = (int)nextPostID;              // needed so we can deliver resource URI
 
                 await _context.conn.OpenAsync();
                 using MySqlCommand cmd = _context.conn.CreateCommand();
@@ -111,22 +116,29 @@ namespace IdunnoAPI.Data
 
                 if(await cmd.ExecuteNonQueryAsync() == -1)
                 {
-                    return false;
+                    return ret.RetInternelServerError();
                 }
 
                 await _context.conn.CloseAsync();
             }
             catch(Exception ex)
             {
-                return false;
+                return ret.RetInternelServerError();
             }
 
-            return true;
+            return ret.FormatReturn(true, "New post successfuly added!", StatusCodes.Status201Created);
         }
-        public async Task<bool> DeletePostAsync(int toBeDeleted)
+        public async Task<ValidationResult> DeletePostAsync(int toBeDeleted)
         {
+            ValidationResult ret = new ValidationResult();
+
             try
             {
+                if((await GetPostsAsync(toBeDeleted)).Count == 0) // if post not found return error
+                {
+                    return ret.FormatReturn(false, "Post not found!", StatusCodes.Status404NotFound);
+                }
+
                 await _context.conn.OpenAsync();
                 using MySqlCommand cmd = _context.conn.CreateCommand();
                 cmd.CommandText = $"USE idunnodb; " +
@@ -135,17 +147,17 @@ namespace IdunnoAPI.Data
 
                 if (await cmd.ExecuteNonQueryAsync() == -1)
                 {
-                    return false;
+                    return ret.RetInternelServerError();
                 }
 
                 await _context.conn.CloseAsync();
             }
             catch (Exception ex)
             {
-                return false;
+                return ret.RetInternelServerError();
             }
 
-            return true;
+            return ret.FormatReturn(true, "Post successfuly deleted!", StatusCodes.Status200OK);
         }
 
         public async Task<ValidationResult> UpdatePostAsync(int postID, Post post)
@@ -154,6 +166,11 @@ namespace IdunnoAPI.Data
 
             try
             {
+                if ((await GetPostsAsync(postID)).Count == 0) // if post not found return error
+                {
+                    return ret.FormatReturn(false, "Post not found!", StatusCodes.Status404NotFound);
+                }
+
                 await _context.conn.OpenAsync();
                 using MySqlCommand cmd = _context.conn.CreateCommand();
 
@@ -175,7 +192,7 @@ namespace IdunnoAPI.Data
                 return ret.RetInternelServerError();
             }
 
-            return ret.FormatReturn(true, "Post've been updated!", StatusCodes.Status204NoContent);
+            return ret.FormatReturn(true, "Post've been updated!", StatusCodes.Status200OK);
         }
 
     }

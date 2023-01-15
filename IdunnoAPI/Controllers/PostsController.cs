@@ -26,7 +26,10 @@ namespace IdunnoAPI.Controllers
         {
             List<Post> posts = await pm.GetPostsAsync();
 
-            if(posts.Count == 0) { return StatusCode(500); } // INTERNAL SERVER ERROR
+            if(posts == null) 
+            { 
+                return StatusCode(StatusCodes.Status500InternalServerError, "Posts couldn't be received, sorry!");                 // INTERNAL SERVER ERROR
+            } 
 
             return Ok(posts);
         }
@@ -37,7 +40,7 @@ namespace IdunnoAPI.Controllers
         {
             List<Post> posts = await pm.GetPostsAsync(postID);
 
-            if (posts.Count == 0) { return NotFound(); }
+            if (posts.Count == 0) { return NotFound("Post not found!"); }
 
             return Ok(posts[0]);
         }
@@ -46,24 +49,23 @@ namespace IdunnoAPI.Controllers
         [HttpPost]
         public async Task<ActionResult> AddAsync([FromBody]Post post)
         {
-            if(await pm.AddPostAsync(post))
+            ValidationResult result = await pm.AddPostAsync(post);
+
+            if (!result.Succeded)
             {
-                return Created($"api/Posts/{post.PostID}", "New post created!");
+                return StatusCode(result.StatusCode, result.Message);
             }
 
-            return StatusCode(500); // INTERNAL SERVER ERROR
+            return Created($"api/Posts/{post.PostID}", result.Message);
         }
 
         [Route("{postID}")]
         [HttpPost]
         public async Task<ActionResult> DeleteAsync([FromRoute]int postID)
         {
-            if (await pm.DeletePostAsync(postID))
-            {
-                return NoContent();
-            }
+            ValidationResult result = await pm.DeletePostAsync(postID);
 
-            return StatusCode(500); // INTERNAL SERVER ERROR
+            return StatusCode(result.StatusCode, result.Message);
 
         }
 
