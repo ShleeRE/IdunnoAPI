@@ -1,4 +1,5 @@
 ﻿using IdunnoAPI.Data;
+using IdunnoAPI.Helpers;
 using IdunnoAPI.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -47,7 +48,7 @@ namespace IdunnoAPI.Controllers
         {
             if(await pm.AddPostAsync(post))
             {
-                return Created($"/Posts/{post.PostID}", post); // CreatedResult - 201 Status Code with created resource in response body.
+                return Created($"api/Posts/{post.PostID}", "New post created!");
             }
 
             return StatusCode(500); // INTERNAL SERVER ERROR
@@ -71,13 +72,9 @@ namespace IdunnoAPI.Controllers
         [HttpPatch]
         public async Task<ActionResult> UpdateAsync([FromRoute] int postID, [FromBody] Post post)
         {
-            if (await pm.UpdatePostAsync(postID, post))
-            {
-                return NoContent();
-            }
+            ValidationResult result = await pm.UpdatePostAsync(postID, post);
 
-            return StatusCode(500); // INTERNAL SERVER ERROR
-
+            return StatusCode(result.StatusCode, result.Message);
         }
     }
 }

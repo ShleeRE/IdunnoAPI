@@ -1,4 +1,5 @@
 ﻿using IdunnoAPI.Extensions;
+using IdunnoAPI.Helpers;
 using IdunnoAPI.Models;
 using MySqlConnector;
 
@@ -13,35 +14,19 @@ namespace IdunnoAPI.Data
             _context = context;
         }
 
-        private ValidationResult ReturnInternalServerError()
-        {
-            ValidationResult ret = new ValidationResult();
-
-            ret.Succeded = false;
-            ret.Message = "Failed to register user - SERVER ERROR.";
-            ret.StatusCode = StatusCodes.Status500InternalServerError;
-
-            return ret;
-
-        }
-
         public async Task<ValidationResult> RegisterUserAsync(User user)
         {
             ValidationResult ret = new ValidationResult();
 
             try
             {
-                bool found = await FindUserAsync(user);
+                ValidationResult foundResult = await FindUserAsync(user);
 
                 _context.conn.Close();                                      // close connection in case if async function would be too slow   
 
-                if (found)
+                if (foundResult.Succeded)
                 {
-                    ret.Succeded = false;
-                    ret.Message = "Used login already exists";
-                    ret.StatusCode = StatusCodes.Status409Conflict;
-
-                    return ret;
+                    return ret.FormatReturn(false, "Used login already exists", StatusCodes.Status409Conflict);
                 }
 
                 await _context.conn.OpenAsync();
@@ -66,25 +51,23 @@ namespace IdunnoAPI.Data
                     $"VALUES ({retID}, '{user.Username}', '{user.Password}', 'User');";
 
                 if (await cmd.ExecuteNonQueryAsync() == -1)
-                {   
-                    return ReturnInternalServerError();
+                {
+                    return ret.RetInternelServerError();
                 }
 
                 await _context.conn.CloseAsync();
             }
             catch (Exception ex)
             {
-                return ReturnInternalServerError();
+                return ret.RetInternelServerError();
             }
 
-            ret.Succeded = true;
-            ret.Message = "Success";
-            ret.StatusCode = StatusCodes.Status201Created;
-
-            return ret;
+            return ret.FormatReturn(true, "User've been registered!", StatusCodes.Status200OK);
         }
-        public async Task<bool> FindUserAsync(User user)
+        public async Task<ValidationResult> FindUserAsync(User user)
         {
+            ValidationResult ret = new ValidationResult();
+
             try
             {
                 await _context.conn.OpenAsync();
@@ -99,20 +82,26 @@ namespace IdunnoAPI.Data
 
                 if(!reader.HasRows)
                 {
-                    return false;
+                    ret.Succeded = false;
+                    ret.Message = "User not found.";
+                    ret.StatusCode = StatusCodes.Status404NotFound;
+
+                    return ret;
                 }
 
-                return true;
+                return ret.FormatReturn(true, "User found", StatusCodes.Status200OK);
 
 
             }catch(Exception ex)
             {
-                return false;
+                return ret.RetInternelServerError();
             }
         }
 
-        public async Task<bool> DeleteUserAsync(int toBeDeleted)
+        public async Task<ValidationResult> DeleteUserAsync(int toBeDeleted)
         {
+            ValidationResult ret = new ValidationResult();
+
             try
             {
                 await _context.conn.OpenAsync();
@@ -123,17 +112,17 @@ namespace IdunnoAPI.Data
 
                 if (await cmd.ExecuteNonQueryAsync() == -1)
                 {
-                    return false;
+                    return ret.RetInternelServerError();
                 }
 
                 await _context.conn.CloseAsync();
             }
             catch (Exception ex)
             {
-                return false;
+                return ret.RetInternelServerError();
             }
 
-            return true;
+            return ret.FormatReturn(true, "User successfully deleted!", StatusCodes.Status200OK);
         }
     }
 }

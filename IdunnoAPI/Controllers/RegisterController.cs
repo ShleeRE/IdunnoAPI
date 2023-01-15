@@ -1,5 +1,5 @@
 ﻿using IdunnoAPI.Data;
-using IdunnoAPI.Extensions;
+using IdunnoAPI.Helpers;
 using IdunnoAPI.Models;
 using Microsoft.AspNetCore.Mvc;
 
@@ -27,8 +27,12 @@ namespace IdunnoAPI.Controllers
         {
              ValidationResult result = await usersManager.RegisterUserAsync(user);
 
+            if (!result.Succeded)
+            {
+                return StatusCode(result.StatusCode, result.Message);
+            }
 
-            return StatusCode(result.StatusCode);
+            return Created($"api/User/{user.UserID}", "You've been registered!");
         }
     }
 }

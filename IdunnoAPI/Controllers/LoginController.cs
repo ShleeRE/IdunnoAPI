@@ -1,5 +1,6 @@
 ﻿using IdunnoAPI.Data;
 using IdunnoAPI.Extensions;
+using IdunnoAPI.Helpers;
 using IdunnoAPI.Models;
 using Microsoft.AspNetCore.Mvc;
 
@@ -26,14 +27,10 @@ namespace IdunnoAPI.Controllers
         [HttpPost]
         public async Task<ActionResult> LoginAsync([FromBody] User user)
         {
-            string result = await this.AuthUserAsync(user, usersManager, _config);
+            ValidationResult valResult = new ValidationResult();
+            valResult = await this.AuthUserAsync(user, usersManager, _config);
 
-            if(result != null)
-            {
-                return Ok(result);
-            }
-
-            return NotFound("User not found");
+            return StatusCode(valResult.StatusCode, valResult.Message);
         }
 
 

@@ -1,4 +1,6 @@
-﻿using IdunnoAPI.Models;
+﻿using IdunnoAPI.Extensions;
+using IdunnoAPI.Helpers;
+using IdunnoAPI.Models;
 using MySqlConnector;
 
 namespace IdunnoAPI.Data
@@ -146,8 +148,10 @@ namespace IdunnoAPI.Data
             return true;
         }
 
-        public async Task<bool> UpdatePostAsync(int postID, Post post)
+        public async Task<ValidationResult> UpdatePostAsync(int postID, Post post)
         {
+            ValidationResult ret = new ValidationResult();
+
             try
             {
                 await _context.conn.OpenAsync();
@@ -161,17 +165,17 @@ namespace IdunnoAPI.Data
 
                 if (await cmd.ExecuteNonQueryAsync() == -1)
                 {
-                    return false;
+                    return ret.RetInternelServerError();
                 }
 
                 await _context.conn.CloseAsync();
             }
             catch (Exception ex)
             {
-                return false;
+                return ret.RetInternelServerError();
             }
 
-            return true;
+            return ret.FormatReturn(true, "Post've been updated!", StatusCodes.Status204NoContent);
         }
 
     }
