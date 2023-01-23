@@ -1,4 +1,5 @@
-﻿using IdunnoAPI.Data;
+﻿using IdunnoAPI.DAL.UnitOfWorks;
+using IdunnoAPI.Data;
 using IdunnoAPI.Helpers;
 using IdunnoAPI.Models;
 using Microsoft.AspNetCore.Http;
@@ -10,62 +11,37 @@ namespace IdunnoAPI.Controllers
     [ApiController]
     public class PostsController : ControllerBase
     {
-        private readonly MySqlDbContext _context;
-
-        private PostsManager pm;
-
-        public PostsController(MySqlDbContext context)
+        private readonly IUnitOfWork _unitOfWork;
+        public PostsController(IUnitOfWork unitOfWork)
         {
-            _context = context;
-
-            pm = new PostsManager(_context);
+            _unitOfWork = unitOfWork;
         }
 
         [HttpGet]
         public async Task<ActionResult> GetAllAsync()
         {
-            List<Post> posts = await pm.GetPostsAsync();
-
-            if(posts == null) 
-            { 
-                return StatusCode(StatusCodes.Status500InternalServerError, "Posts couldn't be received, sorry!");                 // INTERNAL SERVER ERROR
-            } 
-
-            return Ok(posts);
+            return Ok(0);
         }
 
         [Route("{postID}")]
         [HttpGet]
         public async Task<ActionResult> GetByIdAsync([FromRoute]int postID)
         {
-            List<Post> posts = await pm.GetPostsAsync(postID);
-
-            if (posts.Count == 0) { return NotFound("Post not found!"); }
-
-            return Ok(posts[0]);
+            return Ok(0);
         }
 
 
         [HttpPost]
         public async Task<ActionResult> AddAsync([FromBody]Post post)
         {
-            ValidationResult result = await pm.AddPostAsync(post);
-
-            if (!result.Succeded)
-            {
-                return StatusCode(result.StatusCode, result.Message);
-            }
-
-            return Created($"api/Posts/{post.PostID}", result.Message);
+            return Ok(0);
         }
 
         [Route("{postID}")]
         [HttpPost]
         public async Task<ActionResult> DeleteAsync([FromRoute]int postID)
         {
-            ValidationResult result = await pm.DeletePostAsync(postID);
-
-            return StatusCode(result.StatusCode, result.Message);
+            return Ok(0);
 
         }
 
@@ -74,9 +50,7 @@ namespace IdunnoAPI.Controllers
         [HttpPatch]
         public async Task<ActionResult> UpdateAsync([FromRoute] int postID, [FromBody] Post post)
         {
-            ValidationResult result = await pm.UpdatePostAsync(postID, post);
-
-            return StatusCode(result.StatusCode, result.Message);
+            return Ok(0);
         }
     }
 }
