@@ -1,5 +1,4 @@
-﻿using IdunnoAPI.DAL.UnitOfWorks;
-using IdunnoAPI.Data;
+﻿using IdunnoAPI.DAL.Services.Interfaces;
 using IdunnoAPI.Helpers;
 using IdunnoAPI.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -10,10 +9,10 @@ namespace IdunnoAPI.Controllers
     [ApiController]
     public class RegisterController : ControllerBase
     {
-        private readonly IUnitOfWork _unitOfWork;
-        public RegisterController(IUnitOfWork unitOfWork)
+        private readonly IUsersService _usersService;
+        public RegisterController(IUsersService usersService)
         {
-            _unitOfWork = unitOfWork;
+            _usersService = usersService;
         }
 
         [HttpPost]

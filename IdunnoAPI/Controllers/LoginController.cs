@@ -1,6 +1,5 @@
 ﻿using IdunnoAPI.DAL.Repositories;
-using IdunnoAPI.DAL.UnitOfWorks;
-using IdunnoAPI.Data;
+using IdunnoAPI.DAL.Repositories.Interfaces;
 using IdunnoAPI.Extensions;
 using IdunnoAPI.Helpers;
 using IdunnoAPI.Models;
@@ -13,10 +12,10 @@ namespace IdunnoAPI.Controllers
     [ApiController]
     public class LoginController : ControllerBase
     {
-        private readonly IUnitOfWork _unitOfWork;
-        public LoginController(IUnitOfWork unitOfWork)
+        private readonly IUserRepository _usersService;
+        public LoginController(IUserRepository usersService)
         {
-            _unitOfWork = unitOfWork;
+            _usersService = usersService;
         }
 
 

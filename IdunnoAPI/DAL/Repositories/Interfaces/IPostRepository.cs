@@ -1,4 +1,4 @@
-﻿namespace IdunnoAPI.DAL.Repositories
+﻿namespace IdunnoAPI.DAL.Repositories.Interfaces
 {
     public interface IPostRepository : IDisposable
     {

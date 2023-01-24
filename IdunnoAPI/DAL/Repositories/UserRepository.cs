@@ -1,4 +1,6 @@
-﻿namespace IdunnoAPI.DAL.Repositories
+﻿using IdunnoAPI.DAL.Repositories.Interfaces;
+
+namespace IdunnoAPI.DAL.Repositories
 {
     public class UserRepository : IUserRepository, IDisposable
     {
@@ -36,6 +38,11 @@
             {
                 if (disposing)
                 {
+                    if(_context != null)
+                    {
+                        _context.Dispose();
+                    }
+                    
                     // TODO: dispose managed state (managed objects)
                 }
 
