@@ -1,5 +1,7 @@
-﻿using IdunnoAPI.DAL.Repositories.Interfaces;
+﻿using IdunnoAPI.DAL.Repositories;
+using IdunnoAPI.DAL.Repositories.Interfaces;
 using IdunnoAPI.DAL.Services.Interfaces;
+using IdunnoAPI.Models;
 
 namespace IdunnoAPI.DAL.Services
 {
@@ -9,6 +11,10 @@ namespace IdunnoAPI.DAL.Services
 
         public IPostRepository Posts { get; private set; }
 
+        public PostsService(IdunnoDbContext context)
+        {
+            Posts = new PostRepository(context);
+        }
         protected virtual void Dispose(bool disposing)
         {
             if (!disposedValue)
@@ -16,7 +22,10 @@ namespace IdunnoAPI.DAL.Services
                 if (disposing)
                 {
                     // TODO: dispose managed state (managed objects)
-                    Posts.Dispose();
+                    if(Posts != null)
+                    {
+                        Posts.Dispose();
+                    }
                 }
 
                 disposedValue = true;
@@ -29,9 +38,15 @@ namespace IdunnoAPI.DAL.Services
             GC.SuppressFinalize(this);
         }
 
-        public void GetPosts()
+        public async Task<IEnumerable<Post>> GetPostsAsync()
         {
-            throw new NotImplementedException();
+            IEnumerable<Post> posts = await Posts.GetPostsAsync();
+
+            return posts;
+        }
+        public void AddPost(Post post)
+        {
+            Posts.AddPostAsync(post).Wait();
         }
     }
 }

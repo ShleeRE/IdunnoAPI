@@ -1,4 +1,6 @@
 ﻿using IdunnoAPI.DAL.Repositories.Interfaces;
+using IdunnoAPI.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace IdunnoAPI.DAL.Repositories
 {
@@ -11,23 +13,25 @@ namespace IdunnoAPI.DAL.Repositories
         {
             _context = context;
         }
+        public async Task<IEnumerable<Post>> GetPostsAsync()
+        {
+            return _context.Posts;
+        }
 
-        public void AddPost()
+        public async Task<bool> AddPostAsync(Post post)
+        {
+            await _context.AddAsync(post);
+
+            return _context.SaveChangesAsync().Result != 0;
+        }
+
+        public async Task<bool> DeletePostAsync(Post post)
         {
             throw new NotImplementedException();
         }
 
-        public void DeletePost()
-        {
-            throw new NotImplementedException();
-        }
 
-        public void GetPosts()
-        {
-            throw new NotImplementedException();
-        }
-
-        public void UpdatePost()
+        public async Task<bool> UpdatePostAsync(Post post)
         {
             throw new NotImplementedException();
         }

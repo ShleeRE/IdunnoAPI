@@ -1,6 +1,8 @@
-﻿using IdunnoAPI.DAL.Services.Interfaces;
+﻿using IdunnoAPI.DAL.Services;
+using IdunnoAPI.DAL.Services.Interfaces;
 using IdunnoAPI.Helpers;
 using IdunnoAPI.Models;
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -19,7 +21,10 @@ namespace IdunnoAPI.Controllers
         [HttpGet]
         public async Task<ActionResult> GetAllAsync()
         {
-            return Ok(0);
+            throw new RequestException(1, "test");
+            IEnumerable<Post> posts = await _postsSerivce.GetPostsAsync();
+
+            return Ok(posts);
         }
 
         [Route("{postID}")]
@@ -33,6 +38,7 @@ namespace IdunnoAPI.Controllers
         [HttpPost]
         public async Task<ActionResult> AddAsync([FromBody]Post post)
         {
+            _postsSerivce.AddPost(post);
             return Ok(0);
         }
 

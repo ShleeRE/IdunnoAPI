@@ -2,10 +2,13 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using IdunnoAPI.DAL;
+using IdunnoAPI.DAL.Services.Interfaces;
+using IdunnoAPI.DAL.Services;
 
 namespace IdunnoAPI.Extensions
 {
-    public static class ServiceExtensions
+    public static class ServiceCollectionExtensions
     {
         private static readonly IConfiguration _config;
         public static String policyName = "_myAllowSpecificOrigins";
@@ -36,6 +39,12 @@ namespace IdunnoAPI.Extensions
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["JWT:Key"]))
                 };
             });
+        }
+
+        public static void AddServices(this IServiceCollection services) 
+        {
+            services.AddScoped<IPostsService, PostsService>();
+            services.AddScoped<IUsersService, UsersService>();
         }
     }
 }

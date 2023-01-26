@@ -1,10 +1,12 @@
-﻿using IdunnoAPI.DAL.Repositories.Interfaces;
+﻿using IdunnoAPI.Models;
+using IdunnoAPI.DAL.Repositories.Interfaces;
 
 namespace IdunnoAPI.DAL.Services.Interfaces
 {
     public interface IPostsService : IDisposable
     {
         IPostRepository Posts { get; }
-        void GetPosts();
+        Task<IEnumerable<Post>> GetPostsAsync();
+        void AddPost(Post post);
     }
 }

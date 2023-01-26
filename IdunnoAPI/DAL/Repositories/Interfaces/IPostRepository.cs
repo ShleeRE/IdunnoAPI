@@ -1,10 +1,12 @@
-﻿namespace IdunnoAPI.DAL.Repositories.Interfaces
+﻿using IdunnoAPI.Models;
+
+namespace IdunnoAPI.DAL.Repositories.Interfaces
 {
     public interface IPostRepository : IDisposable
     {
-        void GetPosts();
-        void AddPost();
-        void UpdatePost();
-        void DeletePost();
+        Task<IEnumerable<Post>> GetPostsAsync();
+        Task<bool> AddPostAsync(Post post);
+        Task<bool> UpdatePostAsync(Post post);
+        Task<bool> DeletePostAsync(Post post);
     }
 }

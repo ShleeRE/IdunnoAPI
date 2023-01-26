@@ -1,14 +1,16 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace IdunnoAPI.Models
 {
+    [Table("Posts")]
     public class Post
     {
-        public int PostID { get; set; }
-        public int UserID { get; set; }
-        public string PostDate { get; set; } = DateTime.Now.ToString("yyyy-MM-dd H:mm");
-        public string PostTitle { get; set; }
-        public string PostDescription { get; set; }
+        [Required] public int PostID { get; set; }
+        [Required] public int UserID { get; set; }
+        [Required] public string PostDate { get; set; } = DateTime.Now.ToString("yyyy-MM-dd H:mm");
+        [Required] public string PostTitle { get; set; }
+        [Required] public string PostDescription { get; set; }
 
         public string ImagePath { get; set; }
     }
