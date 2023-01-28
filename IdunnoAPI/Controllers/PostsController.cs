@@ -28,8 +28,7 @@ namespace IdunnoAPI.Controllers
 
         [Route("{postID}")]
         [HttpGet]
-        public ActionResult GetById([FromRoute]int postID) // to check if ok is ok
-            // add not found
+        public ActionResult GetById([FromRoute]int postID)
         {
             return Ok(_postsSerivce.GetPostByID(postID));
         }
@@ -52,11 +51,12 @@ namespace IdunnoAPI.Controllers
         }
 
 
-        [Route("{postID}")]
         [HttpPatch]
-        public async Task<ActionResult> UpdateAsync([FromRoute] int postID, [FromBody] Post post)
+        public async Task<ActionResult> UpdateAsync([FromBody] Post post)
         {
-            return Ok(0);
+            await _postsSerivce.UpdatePostAsync(post);
+
+            return Ok();
         }
     }
 }

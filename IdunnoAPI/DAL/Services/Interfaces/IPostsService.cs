@@ -10,5 +10,7 @@ namespace IdunnoAPI.DAL.Services.Interfaces
         Post GetPostByID(int id);
         Task<int> AddPostAsync(Post post);
         Task<bool> DeletePostAsync(int postID);
+
+        Task<bool> UpdatePostAsync(Post post);
     }
 }

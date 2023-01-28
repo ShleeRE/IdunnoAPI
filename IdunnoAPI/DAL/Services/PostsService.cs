@@ -62,5 +62,12 @@ namespace IdunnoAPI.DAL.Services
 
             return deleted;
         }
+
+        public async Task<bool> UpdatePostAsync(Post post)
+        {
+            bool modified = await Posts.UpdatePostAsync(post);
+
+            return modified;
+        }
     }
 }

@@ -33,7 +33,7 @@ namespace IdunnoAPI.DAL.Repositories
 
         public async Task<int> AddPostAsync(Post post)
         {
-            await _context.Posts.AddAsync(post);
+            _context.Posts.Add(post);
 
             int result = await _context.SaveChangesAsync();
 
@@ -65,7 +65,19 @@ namespace IdunnoAPI.DAL.Repositories
 
         public async Task<bool> UpdatePostAsync(Post post)
         {
-            throw new NotImplementedException();
+            Post postToModify = GetPostByID(post.PostID);
+
+            postToModify.PostTitle = post.PostTitle;
+            postToModify.PostDescription = post.PostDescription;
+
+            int result = await _context.SaveChangesAsync();
+
+            if (result == 0)
+            {
+                throw new RequestException(StatusCodes.Status500InternalServerError, "Couldn't update post");
+            }
+
+            return true;
         }
 
         protected virtual void Dispose(bool disposing)
