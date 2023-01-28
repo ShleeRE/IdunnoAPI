@@ -49,7 +49,7 @@ namespace IdunnoAPI.Migrations
 
                     b.HasKey("PostID");
 
-                    b.ToTable("Posts");
+                    b.ToTable("Posts", (string)null);
                 });
 
             modelBuilder.Entity("IdunnoAPI.Models.User", b =>
@@ -74,7 +74,7 @@ namespace IdunnoAPI.Migrations
 
                     b.HasKey("UserID");
 
-                    b.ToTable("Users");
+                    b.ToTable("Users", (string)null);
                 });
 #pragma warning restore 612, 618
         }

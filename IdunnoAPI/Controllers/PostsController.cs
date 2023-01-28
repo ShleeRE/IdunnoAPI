@@ -19,35 +19,36 @@ namespace IdunnoAPI.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult> GetAllAsync()
+        public ActionResult GetAll()
         {
-            throw new RequestException(1, "test");
-            IEnumerable<Post> posts = await _postsSerivce.GetPostsAsync();
+            IEnumerable<Post> posts = _postsSerivce.GetPosts();
 
             return Ok(posts);
         }
 
         [Route("{postID}")]
         [HttpGet]
-        public async Task<ActionResult> GetByIdAsync([FromRoute]int postID)
+        public ActionResult GetById([FromRoute]int postID) // to check if ok is ok
+            // add not found
         {
-            return Ok(0);
+            return Ok(_postsSerivce.GetPostByID(postID));
         }
 
 
         [HttpPost]
         public async Task<ActionResult> AddAsync([FromBody]Post post)
         {
-            _postsSerivce.AddPost(post);
-            return Ok(0);
+            int newPostID = await _postsSerivce.AddPostAsync(post);
+            return Created($"api/Posts/{newPostID}", post);
         }
 
         [Route("{postID}")]
         [HttpPost]
         public async Task<ActionResult> DeleteAsync([FromRoute]int postID)
         {
-            return Ok(0);
+            await _postsSerivce.DeletePostAsync(postID);
 
+            return NoContent();
         }
 
 

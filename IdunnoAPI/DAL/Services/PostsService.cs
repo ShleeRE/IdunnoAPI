@@ -5,6 +5,7 @@ using IdunnoAPI.Models;
 
 namespace IdunnoAPI.DAL.Services
 {
+    /// <summary>   Service layer. Return types should be taken with a grain of salt. Error checking is already handled by repository layer by throwing exceptions.
     public class PostsService : IPostsService, IDisposable
     {
         private bool disposedValue;
@@ -38,15 +39,28 @@ namespace IdunnoAPI.DAL.Services
             GC.SuppressFinalize(this);
         }
 
-        public async Task<IEnumerable<Post>> GetPostsAsync()
+        public IEnumerable<Post> GetPosts()
         {
-            IEnumerable<Post> posts = await Posts.GetPostsAsync();
+            IEnumerable<Post> posts = Posts.GetPosts();
 
             return posts;
         }
-        public void AddPost(Post post)
+        public Post GetPostByID(int id)
         {
-            Posts.AddPostAsync(post).Wait();
+            return Posts.GetPostByID(id);
+        }
+        public async Task<int> AddPostAsync(Post post)
+        {
+            int newPostID = await Posts.AddPostAsync(post);
+
+            return newPostID;
+        }
+
+        public async Task<bool> DeletePostAsync(int postID)
+        {
+            bool deleted = await Posts.DeletePostAsync(postID);
+
+            return deleted;
         }
     }
 }

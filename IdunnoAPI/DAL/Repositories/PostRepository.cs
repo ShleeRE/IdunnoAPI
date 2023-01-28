@@ -1,4 +1,5 @@
 ﻿using IdunnoAPI.DAL.Repositories.Interfaces;
+using IdunnoAPI.Helpers;
 using IdunnoAPI.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -13,21 +14,52 @@ namespace IdunnoAPI.DAL.Repositories
         {
             _context = context;
         }
-        public async Task<IEnumerable<Post>> GetPostsAsync()
+        public IEnumerable<Post> GetPosts()
         {
             return _context.Posts;
         }
 
-        public async Task<bool> AddPostAsync(Post post)
+        public Post GetPostByID(int id)
         {
-            await _context.AddAsync(post);
+            Post searchedPost = _context.Posts.Where(p => p.PostID == id).FirstOrDefaultAsync().Result;
 
-            return _context.SaveChangesAsync().Result != 0;
+            if(searchedPost == null)
+            {
+                throw new RequestException(StatusCodes.Status404NotFound, "This post could not be found.");
+            }
+
+            return searchedPost;
         }
 
-        public async Task<bool> DeletePostAsync(Post post)
+        public async Task<int> AddPostAsync(Post post)
         {
-            throw new NotImplementedException();
+            await _context.Posts.AddAsync(post);
+
+            int result = await _context.SaveChangesAsync();
+
+            if (result == 0)
+            {
+                throw new RequestException(StatusCodes.Status500InternalServerError, "Couldn't add post");
+            }
+
+            return post.PostID;
+        }
+
+        public async Task<bool> DeletePostAsync(int postID)
+        {
+            Post post = new Post { PostID = postID };
+
+            _context.Posts.Attach(post);
+            _context.Posts.Remove(post);
+
+            int result = await _context.SaveChangesAsync();
+
+            if (result == 0)
+            {
+                throw new RequestException(StatusCodes.Status500InternalServerError, "Couldn't delete post");
+            }
+
+            return true;
         }
 
 
@@ -57,5 +89,7 @@ namespace IdunnoAPI.DAL.Repositories
             Dispose(disposing: true);
             GC.SuppressFinalize(this);
         }
+
+      
     }
 }

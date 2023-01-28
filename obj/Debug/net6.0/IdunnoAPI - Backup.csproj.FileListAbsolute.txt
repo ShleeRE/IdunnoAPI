@@ -5,3 +5,10 @@ C:\Users\Shlee\Source\Repos\IdunnoAPI\obj\Debug\net6.0\IdunnoAPI - Backup.Assemb
 C:\Users\Shlee\Source\Repos\IdunnoAPI\obj\Debug\net6.0\IdunnoAPI - Backup.csproj.CoreCompileInputs.cache
 C:\Users\Shlee\Source\Repos\IdunnoAPI\obj\Debug\net6.0\IdunnoAPI - Backup.MvcApplicationPartsAssemblyInfo.cs
 C:\Users\Shlee\Source\Repos\IdunnoAPI\obj\Debug\net6.0\IdunnoAPI - Backup.MvcApplicationPartsAssemblyInfo.cache
+C:\Users\konra\source\repos\IdunnoAPI\obj\Debug\net6.0\IdunnoAPI - Backup.csproj.AssemblyReference.cache
+C:\Users\konra\source\repos\IdunnoAPI\obj\Debug\net6.0\IdunnoAPI - Backup.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\konra\source\repos\IdunnoAPI\obj\Debug\net6.0\IdunnoAPI - Backup.AssemblyInfoInputs.cache
+C:\Users\konra\source\repos\IdunnoAPI\obj\Debug\net6.0\IdunnoAPI - Backup.AssemblyInfo.cs
+C:\Users\konra\source\repos\IdunnoAPI\obj\Debug\net6.0\IdunnoAPI - Backup.csproj.CoreCompileInputs.cache
+C:\Users\konra\source\repos\IdunnoAPI\obj\Debug\net6.0\IdunnoAPI - Backup.MvcApplicationPartsAssemblyInfo.cs
+C:\Users\konra\source\repos\IdunnoAPI\obj\Debug\net6.0\IdunnoAPI - Backup.MvcApplicationPartsAssemblyInfo.cache

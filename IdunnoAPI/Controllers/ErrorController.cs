@@ -13,7 +13,15 @@ namespace IdunnoAPI.Controllers
         [Route("error")]
         public ActionResult Error()
         {
-            RequestException exception = (RequestException)HttpContext.Features.Get<IExceptionHandlerPathFeature>().Error;
+            RequestException exception = new RequestException(StatusCodes.Status500InternalServerError, "Server could not perform your request.");
+
+            try
+            {
+                exception = (RequestException)HttpContext.Features.Get<IExceptionHandlerPathFeature>().Error;
+            }catch(InvalidCastException ice)
+            {
+            }
+            
 
             return StatusCode(exception.StatusCode, exception.Message);
         }
