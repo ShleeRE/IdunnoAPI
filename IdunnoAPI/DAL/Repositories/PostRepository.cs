@@ -19,9 +19,9 @@ namespace IdunnoAPI.DAL.Repositories
             return _context.Posts;
         }
 
-        public Post GetPostByID(int id)
+        public async Task<Post> GetPostByIdAsync(int id)
         {
-            Post searchedPost = _context.Posts.Where(p => p.PostID == id).FirstOrDefaultAsync().Result;
+            Post searchedPost = await _context.Posts.Where(p => p.PostID == id).FirstOrDefaultAsync();
 
             if(searchedPost == null)
             {
@@ -65,7 +65,7 @@ namespace IdunnoAPI.DAL.Repositories
 
         public async Task<bool> UpdatePostAsync(Post post)
         {
-            Post postToModify = GetPostByID(post.PostID);
+            Post postToModify = await GetPostByIdAsync(post.PostID);
 
             postToModify.PostTitle = post.PostTitle;
             postToModify.PostDescription = post.PostDescription;

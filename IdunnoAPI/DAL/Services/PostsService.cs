@@ -33,41 +33,5 @@ namespace IdunnoAPI.DAL.Services
             }
         }
 
-        public void Dispose()
-        {
-            Dispose(disposing: true);
-            GC.SuppressFinalize(this);
-        }
-
-        public IEnumerable<Post> GetPosts()
-        {
-            IEnumerable<Post> posts = Posts.GetPosts();
-
-            return posts;
-        }
-        public Post GetPostByID(int id)
-        {
-            return Posts.GetPostByID(id);
-        }
-        public async Task<int> AddPostAsync(Post post)
-        {
-            int newPostID = await Posts.AddPostAsync(post);
-
-            return newPostID;
-        }
-
-        public async Task<bool> DeletePostAsync(int postID)
-        {
-            bool deleted = await Posts.DeletePostAsync(postID);
-
-            return deleted;
-        }
-
-        public async Task<bool> UpdatePostAsync(Post post)
-        {
-            bool modified = await Posts.UpdatePostAsync(post);
-
-            return modified;
-        }
     }
 }

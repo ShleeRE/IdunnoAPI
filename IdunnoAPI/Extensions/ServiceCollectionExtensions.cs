@@ -24,23 +24,6 @@ namespace IdunnoAPI.Extensions
             });
         }
 
-        public static void AddAuth(this IServiceCollection services, IConfiguration config)
-        {
-            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
-            {
-                options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
-                {
-                    ValidateIssuer = true,
-                    ValidateAudience = true,
-                    ValidateLifetime = true,
-                    ValidateIssuerSigningKey = true,
-                    ValidIssuer = config["JWT:Issuer"],
-                    ValidAudience = config["JWT:Audience"],
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["JWT:Key"]))
-                };
-            });
-        }
-
         public static void AddServices(this IServiceCollection services) 
         {
             services.AddScoped<IPostsService, PostsService>();

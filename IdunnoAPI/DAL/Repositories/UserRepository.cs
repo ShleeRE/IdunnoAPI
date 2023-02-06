@@ -1,4 +1,8 @@
 ﻿using IdunnoAPI.DAL.Repositories.Interfaces;
+using IdunnoAPI.Helpers;
+using IdunnoAPI.Models;
+using Microsoft.EntityFrameworkCore;
+using System.Threading.Tasks;
 
 namespace IdunnoAPI.DAL.Repositories
 {
@@ -10,26 +14,6 @@ namespace IdunnoAPI.DAL.Repositories
         public UserRepository(IdunnoDbContext context)
         {
             _context = context;
-        }
-
-        public void AddUser()
-        {
-            throw new NotImplementedException();
-        }
-
-        public void DeleteUser()
-        {
-            throw new NotImplementedException();
-        }
-
-        public void GetUsers()
-        {
-            throw new NotImplementedException();
-        }
-
-        public void UpdateUser()
-        {
-            throw new NotImplementedException();
         }
 
         protected virtual void Dispose(bool disposing)
@@ -54,5 +38,52 @@ namespace IdunnoAPI.DAL.Repositories
             Dispose(disposing: true);
             GC.SuppressFinalize(this);
         }
+        public IEnumerable<User> GetUsers()
+        {
+            return _context.Users;
+        }
+
+        public async Task<User> GetUserByIdAsync(int id)
+        {
+            User searchedUser = await _context.Users.Where(u => u.UserID == id).FirstOrDefaultAsync();
+
+            if(searchedUser == null) 
+            {
+                throw new RequestException(StatusCodes.Status404NotFound, "This user could not be found.");
+            }
+
+            return searchedUser;
+        }
+
+        public async Task<bool> CheckIfExists(User user)
+        {
+            User searchedUser = await _context.Users.Where(u => u.Username == user.Username).FirstOrDefaultAsync();
+
+            return searchedUser != null;
+        }
+        public async Task<bool> RegisterUserAsync(User user)
+        {
+            if(await CheckIfExists(user))
+            {
+                throw new RequestException(StatusCodes.Status409Conflict, "Entered login already exists.");
+            }
+
+            _context.Users.Add(user);
+
+            await _context.SaveChangesAsync();
+
+            return true;
+        }
+
+        public async Task<bool> DeleteUserAsync(int userId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<bool> UpdateUserAsync(User user)
+        {
+            throw new NotImplementedException();
+        }
+
     }
 }

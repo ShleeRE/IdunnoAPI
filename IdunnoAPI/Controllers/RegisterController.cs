@@ -16,9 +16,11 @@ namespace IdunnoAPI.Controllers
 
         [HttpPost]
 
-        public async Task<ActionResult> RegisterAsync([FromBody]User user)
+        public async Task<ActionResult> RegisterAsync([FromBody]User user) // 200 OK not Created 204 we won't return User in request response due pure security.
         {
-            return Ok(0);
+            await _usersService.RegisterUserAsync(user);
+
+            return Ok("User has been registered.");
         }
     }
 }

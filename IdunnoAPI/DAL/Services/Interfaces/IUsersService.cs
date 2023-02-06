@@ -1,10 +1,9 @@
 ﻿using IdunnoAPI.DAL.Repositories.Interfaces;
+using IdunnoAPI.Models;
 
 namespace IdunnoAPI.DAL.Services.Interfaces
 {
     public interface IUsersService
     {
-        IUserRepository Users { get; }
-        void GetUsers();
     }
 }

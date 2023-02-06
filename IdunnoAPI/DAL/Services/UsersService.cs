@@ -1,6 +1,7 @@
 ﻿using IdunnoAPI.DAL.Repositories;
 using IdunnoAPI.DAL.Repositories.Interfaces;
 using IdunnoAPI.DAL.Services.Interfaces;
+using IdunnoAPI.Models;
 
 namespace IdunnoAPI.DAL.Services
 {
@@ -12,10 +13,6 @@ namespace IdunnoAPI.DAL.Services
         public UsersService(IdunnoDbContext context) 
         {
             Users = new UserRepository(context);
-        }
-        public void GetUsers()
-        {
-            throw new NotImplementedException();
         }
 
         protected virtual void Dispose(bool disposing)

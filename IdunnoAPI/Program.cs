@@ -30,8 +30,6 @@ namespace IdunnoAPI
                 builder.Services.ConfigureCors();
             }
 
-            //builder.Services.AddAuth(builder.Configuration);
-
             var app = builder.Build();
 
             app.Configure();
