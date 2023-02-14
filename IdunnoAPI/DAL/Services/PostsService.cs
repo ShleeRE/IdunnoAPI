@@ -22,16 +22,19 @@ namespace IdunnoAPI.DAL.Services
             {
                 if (disposing)
                 {
-                    // TODO: dispose managed state (managed objects)
-                    if(Posts != null)
+                    if (Posts != null)
                     {
                         Posts.Dispose();
                     }
                 }
-
                 disposedValue = true;
             }
         }
 
+        public void Dispose()
+        {
+            Dispose(disposing: true);
+            GC.SuppressFinalize(this);
+        }
     }
 }

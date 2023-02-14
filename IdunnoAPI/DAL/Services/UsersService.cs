@@ -8,7 +8,7 @@ namespace IdunnoAPI.DAL.Services
     public class UsersService : IUsersService, IDisposable
     {
         private bool disposedValue;
-        public IUserRepository Users { get; }
+        public IUserRepository Users { get;}
 
         public UsersService(IdunnoDbContext context) 
         {
@@ -32,9 +32,13 @@ namespace IdunnoAPI.DAL.Services
 
         public void Dispose()
         {
-            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
             Dispose(disposing: true);
             GC.SuppressFinalize(this);
+        }
+
+        public async Task<bool> RegisterUserAsync(User user)
+        {
+            return false;
         }
     }
 }

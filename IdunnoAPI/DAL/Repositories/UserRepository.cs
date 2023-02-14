@@ -61,7 +61,7 @@ namespace IdunnoAPI.DAL.Repositories
 
             return searchedUser != null;
         }
-        public async Task<bool> RegisterUserAsync(User user)
+        public async Task<bool> AddUserAsync(User user)
         {
             if(await CheckIfExists(user))
             {

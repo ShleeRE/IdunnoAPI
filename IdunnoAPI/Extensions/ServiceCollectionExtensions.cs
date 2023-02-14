@@ -5,6 +5,8 @@ using System.Text;
 using IdunnoAPI.DAL;
 using IdunnoAPI.DAL.Services.Interfaces;
 using IdunnoAPI.DAL.Services;
+using IdunnoAPI.DAL.Repositories.Interfaces;
+using IdunnoAPI.DAL.Repositories;
 
 namespace IdunnoAPI.Extensions
 {
@@ -28,6 +30,8 @@ namespace IdunnoAPI.Extensions
         {
             services.AddScoped<IPostsService, PostsService>();
             services.AddScoped<IUsersService, UsersService>();
+            services.AddScoped<IPostRepository, PostRepository>();
+            services.AddScoped<IUserRepository, UserRepository>();
         }
     }
 }

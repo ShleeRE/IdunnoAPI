@@ -12,20 +12,21 @@ namespace IdunnoAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+    //[Authorize]
     public class PostsController : ControllerBase
     {
         private readonly IPostsService _postsSerivce;
-        private readonly IPostRepository _postRepository;
-        public PostsController(IPostsService postsService)
+        private readonly IPostRepository _posts;
+        public PostsController(IPostsService postsService, IPostRepository postsRepo)
         {
             _postsSerivce = postsService;
+            _posts = postsRepo;
         }
 
         [HttpGet]
         public ActionResult GetAll()
         {
-            IEnumerable<Post> posts = _postsSerivce.GetPosts();
+            IEnumerable<Post> posts = _posts.GetPosts();
 
             return Ok(posts);
         }
@@ -34,14 +35,14 @@ namespace IdunnoAPI.Controllers
         [HttpGet]
         public async Task<ActionResult> GetByIdAsync([FromRoute]int postID)
         {
-            return Ok(await _postsSerivce.GetPostByIdAsync(postID));
+            return Ok(await _posts.GetPostByIdAsync(postID));
         }
 
-        [Authorize(Roles = "Administrator")]
+        //[Authorize(Roles = "Administrator")]
         [HttpPost]
         public async Task<ActionResult> AddAsync([FromBody]Post post)
         {
-            int newPostID = await _postsSerivce.AddPostAsync(post);
+            int newPostID = await _posts.AddPostAsync(post);
             return Created($"api/Posts/{newPostID}", post);
         }
 
@@ -49,18 +50,17 @@ namespace IdunnoAPI.Controllers
         [HttpDelete]
         public async Task<ActionResult> DeleteAsync([FromRoute]int postID)
         {
-            await _postsSerivce.DeletePostAsync(postID);
+            await _posts.DeletePostAsync(postID);
 
-            return Ok();
+            return Ok(); // to check
         }
 
-
-        [HttpPut]
+        [HttpPatch]
         public async Task<ActionResult> UpdateAsync([FromBody] Post post)
         {
-            await _postsSerivce.UpdatePostAsync(post);
+            await _posts.UpdatePostAsync(post);
 
-            return NoContent();
+            return NoContent(); // to check
         }
     }
 }
