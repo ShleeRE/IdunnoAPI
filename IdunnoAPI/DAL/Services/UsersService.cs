@@ -1,7 +1,9 @@
 ﻿using IdunnoAPI.DAL.Repositories;
 using IdunnoAPI.DAL.Repositories.Interfaces;
 using IdunnoAPI.DAL.Services.Interfaces;
+using IdunnoAPI.Helpers;
 using IdunnoAPI.Models;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace IdunnoAPI.DAL.Services
 {
@@ -36,9 +38,16 @@ namespace IdunnoAPI.DAL.Services
             GC.SuppressFinalize(this);
         }
 
-        public async Task<bool> RegisterUserAsync(User user)
+        public async Task<JwtSecurityToken> AuthenticateUser(User user)
         {
-            return false;
+            bool found = await Users.CheckIfExists(user);
+
+            if (!found) { throw new RequestException(StatusCodes.Status404NotFound, "User has been not found."); }
+
+
+
+
+            throw new NotImplementedException();
         }
     }
 }

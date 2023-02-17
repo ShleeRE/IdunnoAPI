@@ -1,6 +1,7 @@
 ﻿using IdunnoAPI.DAL.Repositories.Interfaces;
 using IdunnoAPI.Helpers;
 using IdunnoAPI.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 
 namespace IdunnoAPI.DAL.Repositories

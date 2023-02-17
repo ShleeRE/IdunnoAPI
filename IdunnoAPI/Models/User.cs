@@ -13,6 +13,6 @@ namespace IdunnoAPI.Models
 
         [Required] public string Password { get; set; }
 
-        [Required] public string Role { get; set; }
+        [Required] public string Role { get; private set; } = "User";
     }
 }

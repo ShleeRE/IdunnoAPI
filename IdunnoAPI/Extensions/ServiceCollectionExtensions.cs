@@ -33,5 +33,19 @@ namespace IdunnoAPI.Extensions
             services.AddScoped<IPostRepository, PostRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
         }
+
+        public static void AddAuth(this IServiceCollection services, ConfigurationManager cfg)
+        {
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = options.DefaultChallengeScheme = options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer(options => 
+            {
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(cfg["JWT:Key"]))
+                };
+            });
+        }
     }
 }
