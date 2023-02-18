@@ -7,6 +7,8 @@ using IdunnoAPI.DAL.Services.Interfaces;
 using IdunnoAPI.DAL.Services;
 using IdunnoAPI.DAL.Repositories.Interfaces;
 using IdunnoAPI.DAL.Repositories;
+using IdunnoAPI.Auth.Interfaces;
+using IdunnoAPI.Auth;
 
 namespace IdunnoAPI.Extensions
 {
@@ -32,17 +34,20 @@ namespace IdunnoAPI.Extensions
             services.AddScoped<IUsersService, UsersService>();
             services.AddScoped<IPostRepository, PostRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<ITokenGenerator, TokenGenerator>();
         }
 
         public static void AddAuth(this IServiceCollection services, ConfigurationManager cfg)
         {
-            services.AddAuthentication(options =>
-            {
-                options.DefaultAuthenticateScheme = options.DefaultChallengeScheme = options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-            }).AddJwtBearer(options => 
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options => 
             {
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
+                    ValidateIssuer = false,
+                    ValidateAudience = false,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(cfg["JWT:Key"]))
                 };
             });

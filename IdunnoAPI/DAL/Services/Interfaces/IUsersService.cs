@@ -7,6 +7,6 @@ namespace IdunnoAPI.DAL.Services.Interfaces
     public interface IUsersService : IDisposable
     {
         IUserRepository Users { get; }
-        Task<JwtSecurityToken> AuthenticateUser(User user);
+        Task<string> AuthenticateUser(User user);
     }
 }

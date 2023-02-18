@@ -1,4 +1,6 @@
-﻿using IdunnoAPI.DAL.Repositories;
+﻿using IdunnoAPI.Auth;
+using IdunnoAPI.Auth.Interfaces;
+using IdunnoAPI.DAL.Repositories;
 using IdunnoAPI.DAL.Repositories.Interfaces;
 using IdunnoAPI.DAL.Services.Interfaces;
 using IdunnoAPI.Helpers;
@@ -10,13 +12,29 @@ namespace IdunnoAPI.DAL.Services
     public class UsersService : IUsersService, IDisposable
     {
         private bool disposedValue;
-        public IUserRepository Users { get;}
+        public IUserRepository Users { get; }
+        private readonly ITokenGenerator _tkGenerator;
 
-        public UsersService(IdunnoDbContext context) 
+
+        public UsersService(IUserRepository users, ITokenGenerator tokenGenerator) 
         {
-            Users = new UserRepository(context);
+            Users = users;
+            _tkGenerator = tokenGenerator;
         }
 
+
+        public async Task<string> AuthenticateUser(User user)
+        {
+            bool found = await Users.CheckIfExists(user);
+
+            if (!found) { throw new RequestException(StatusCodes.Status404NotFound, "User has been not found."); }
+
+            string token = _tkGenerator.GenerateToken(user);
+
+            return token;
+        }
+        
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////
         protected virtual void Dispose(bool disposing)
         {
             if (!disposedValue)
@@ -36,18 +54,6 @@ namespace IdunnoAPI.DAL.Services
         {
             Dispose(disposing: true);
             GC.SuppressFinalize(this);
-        }
-
-        public async Task<JwtSecurityToken> AuthenticateUser(User user)
-        {
-            bool found = await Users.CheckIfExists(user);
-
-            if (!found) { throw new RequestException(StatusCodes.Status404NotFound, "User has been not found."); }
-
-
-
-
-            throw new NotImplementedException();
         }
     }
 }
