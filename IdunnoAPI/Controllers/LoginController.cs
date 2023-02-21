@@ -1,4 +1,5 @@
-﻿using IdunnoAPI.DAL.Services.Interfaces;
+﻿using Azure;
+using IdunnoAPI.DAL.Services.Interfaces;
 using IdunnoAPI.Models;
 using Microsoft.AspNetCore.Mvc;
 
@@ -19,7 +20,7 @@ namespace IdunnoAPI.Controllers
         [HttpPost]
         public async Task<ActionResult> LoginAsync([FromBody] User user)
         {
-            string token = await _usersService.AuthenticateUser(user);
+            string token = await _usersService.AuthenticateUser(user, Response);
 
             return Ok(token);
         }

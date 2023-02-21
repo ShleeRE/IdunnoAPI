@@ -10,9 +10,9 @@
 
             if (app.Environment.IsDevelopment())
             {
-                app.UseCors(ServiceCollectionExtensions.policyName);
                 app.UseSwagger();
                 app.UseSwaggerUI();
+                app.UseCors(ServiceCollectionExtensions.policyName);
             }
 
             app.UseHttpsRedirection();

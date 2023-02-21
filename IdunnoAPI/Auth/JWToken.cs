@@ -7,11 +7,11 @@ using System.Text;
 
 namespace IdunnoAPI.Auth
 {
-    public class TokenGenerator : ITokenGenerator // if we will get to point with more functionality, consider creating interface and using DI.
+    public class JWToken : IJWToken // if we will get to point with more functionality, consider creating interface and using DI.
     {
         private readonly IConfiguration _cfg;
 
-        public TokenGenerator(IConfiguration cfg)
+        public JWToken(IConfiguration cfg)
         {
             _cfg = cfg; 
         }
@@ -28,11 +28,22 @@ namespace IdunnoAPI.Auth
             };
 
             JwtSecurityToken st = new JwtSecurityToken(issuer: null, audience: null,
-                claims, notBefore: null, expires: DateTime.Now.AddMinutes(2), sc);
+                claims, notBefore: null, expires: DateTime.Now.AddMinutes(Convert.ToDouble(_cfg["JWT:Expires"])), sc);
 
             String token = new JwtSecurityTokenHandler().WriteToken(st);
 
             return token;
+        }
+
+        public void SpreadToken(string token, HttpResponse response)
+        {
+            response.Cookies.Append(_cfg["JWT:StoringCookie"], token, new CookieOptions
+            {
+                HttpOnly = true,
+                SameSite = SameSiteMode.Strict,
+                Expires = DateTime.Now.AddMinutes(Convert.ToDouble(_cfg["JWT:Expires"])),
+                IsEssential = true
+            });
         }
     }
 }
