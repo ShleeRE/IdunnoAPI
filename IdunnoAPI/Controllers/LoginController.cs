@@ -1,6 +1,5 @@
-﻿using IdunnoAPI.DAL.Repositories;
-using IdunnoAPI.DAL.Repositories.Interfaces;
-using IdunnoAPI.Extensions;
+﻿using Azure;
+using IdunnoAPI.DAL.Services.Interfaces;
 using IdunnoAPI.Models;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,8 +10,8 @@ namespace IdunnoAPI.Controllers
     [ApiController]
     public class LoginController : ControllerBase
     {
-        private readonly IUserRepository _usersService;
-        public LoginController(IUserRepository usersService)
+        private readonly IUsersService _usersService;
+        public LoginController(IUsersService usersService)
         {
             _usersService = usersService;
         }
@@ -21,7 +20,9 @@ namespace IdunnoAPI.Controllers
         [HttpPost]
         public async Task<ActionResult> LoginAsync([FromBody] User user)
         {
-            return Ok(2);
+            string token = await _usersService.AuthenticateUser(user, Response);
+
+            return Ok(token);
         }
 
 

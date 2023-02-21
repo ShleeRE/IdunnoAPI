@@ -12,14 +12,14 @@ namespace IdunnoAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    //[Authorize]
+    [Authorize]
     public class PostsController : ControllerBase
     {
-        private readonly IPostsService _postsSerivce;
+        private readonly IPostsService _postsService;
         private readonly IPostRepository _posts;
         public PostsController(IPostsService postsService, IPostRepository postsRepo)
         {
-            _postsSerivce = postsService;
+            _postsService = postsService;
             _posts = postsRepo;
         }
 
@@ -38,7 +38,6 @@ namespace IdunnoAPI.Controllers
             return Ok(await _posts.GetPostByIdAsync(postID));
         }
 
-        //[Authorize(Roles = "Administrator")]
         [HttpPost]
         public async Task<ActionResult> AddAsync([FromBody]Post post)
         {
