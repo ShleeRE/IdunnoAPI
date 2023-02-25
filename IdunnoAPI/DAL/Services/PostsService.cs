@@ -16,6 +16,7 @@ namespace IdunnoAPI.DAL.Services
         {
             Posts = new PostRepository(context);
         }
+
         protected virtual void Dispose(bool disposing)
         {
             if (!disposedValue)

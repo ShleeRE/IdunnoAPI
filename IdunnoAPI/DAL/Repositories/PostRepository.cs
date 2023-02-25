@@ -32,6 +32,36 @@ namespace IdunnoAPI.DAL.Repositories
             return searchedPost;
         }
 
+        public async Task<IEnumerable<Post>> GetPostsByMatchAsync(string title, string description)
+        {
+            IQueryable<Post> posts = null;
+
+            if(title != null)
+            {
+                posts = _context.Posts.Where(p => p.PostTitle.Contains(title));
+            }
+
+            if(description != null)
+            {
+                if (posts != null)
+                {
+                    posts.Where(p => p.PostDescription.Contains(description));
+                }
+                else
+                {
+                    posts = _context.Posts.Where(p => p.PostDescription.Contains(description));
+                }
+
+            }
+
+            if(posts == null)
+            {
+                return await _context.Posts.ToListAsync();
+            }
+
+            return await posts.ToListAsync();
+        }
+
         public async Task<int> AddPostAsync(Post post)
         {
             _context.Posts.Add(post);
@@ -102,7 +132,5 @@ namespace IdunnoAPI.DAL.Repositories
             Dispose(disposing: true);
             GC.SuppressFinalize(this);
         }
-
-      
     }
 }
