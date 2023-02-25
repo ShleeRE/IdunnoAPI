@@ -31,11 +31,20 @@ namespace IdunnoAPI.Controllers
             return Ok(posts);
         }
 
+        [Route("ByPage")]
+        [HttpGet]
+        public async Task<ActionResult> GetPostsByPageAsync([FromQuery] string match)
+        {
+            IEnumerable<Post> posts = await _posts.GetPostsByMatchAsync(match);
+
+            return Ok(posts);
+        }
+
         [Route("ByMatch")]
         [HttpGet]
-        public async Task<ActionResult> GetPostsByMatchAsync([FromQuery]string title, [FromQuery]string description)
+        public async Task<ActionResult> GetPostsByMatchAsync([FromQuery]string match)
         {
-            IEnumerable<Post> posts = await _posts.GetPostsByMatchAsync(title, description);
+            IEnumerable<Post> posts = await _posts.GetPostsByMatchAsync(match);
 
             return Ok(posts);
         }

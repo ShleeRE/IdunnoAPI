@@ -32,29 +32,15 @@ namespace IdunnoAPI.DAL.Repositories
             return searchedPost;
         }
 
-        public async Task<IEnumerable<Post>> GetPostsByMatchAsync(string title, string description)
+        public async Task<IEnumerable<Post>> GetPostsByMatchAsync(string match)
         {
             IQueryable<Post> posts = null;
 
-            if(title != null)
+            if(match != null)
             {
-                posts = _context.Posts.Where(p => p.PostTitle.Contains(title));
+                posts = _context.Posts.Where(p => p.PostTitle.Contains(match) || p.PostDescription.Contains(match));
             }
-
-            if(description != null)
-            {
-                if (posts != null)
-                {
-                    posts.Where(p => p.PostDescription.Contains(description));
-                }
-                else
-                {
-                    posts = _context.Posts.Where(p => p.PostDescription.Contains(description));
-                }
-
-            }
-
-            if(posts == null)
+            else
             {
                 return await _context.Posts.ToListAsync();
             }
