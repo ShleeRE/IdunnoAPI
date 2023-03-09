@@ -9,6 +9,6 @@ namespace IdunnoAPI.DAL.Repositories.Interfaces
         Task<Post> GetPostByIdAsync(int id);
         Task<int> AddPostAsync(Post post);
         Task<bool> UpdatePostAsync(Post post);
-        Task<bool> DeletePostAsync(int postID);
+        Task<bool> DeletePostAsync(int postId);
     }
 }

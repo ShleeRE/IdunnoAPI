@@ -22,7 +22,7 @@ namespace IdunnoAPI.DAL.Repositories
 
         public async Task<Post> GetPostByIdAsync(int id)
         {
-            Post searchedPost = await _context.Posts.Where(p => p.PostID == id).FirstOrDefaultAsync();
+            Post searchedPost = await _context.Posts.Where(p => p.PostId == id).FirstOrDefaultAsync();
 
             if(searchedPost == null)
             {
@@ -59,12 +59,12 @@ namespace IdunnoAPI.DAL.Repositories
                 throw new RequestException(StatusCodes.Status500InternalServerError, "Couldn't add post");
             }
 
-            return post.PostID;
+            return post.PostId;
         }
 
         public async Task<bool> DeletePostAsync(int postID)
         {
-            Post post = new Post { PostID = postID };
+            Post post = new Post { PostId = postID };
 
             _context.Posts.Attach(post);
             _context.Posts.Remove(post);
@@ -82,7 +82,7 @@ namespace IdunnoAPI.DAL.Repositories
 
         public async Task<bool> UpdatePostAsync(Post post)
         {
-            Post postToModify = await GetPostByIdAsync(post.PostID);
+            Post postToModify = await GetPostByIdAsync(post.PostId);
 
             postToModify.PostTitle = post.PostTitle;
             postToModify.PostDescription = post.PostDescription;

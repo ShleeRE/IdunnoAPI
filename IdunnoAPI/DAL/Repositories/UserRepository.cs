@@ -45,7 +45,7 @@ namespace IdunnoAPI.DAL.Repositories
 
         public async Task<User> GetUserByIdAsync(int id)
         {
-            User searchedUser = await _context.Users.Where(u => u.UserID == id).FirstOrDefaultAsync();
+            User searchedUser = await _context.Users.Where(u => u.UserId == id).FirstOrDefaultAsync();
 
             if(searchedUser == null) 
             {
@@ -58,6 +58,12 @@ namespace IdunnoAPI.DAL.Repositories
         public async Task<bool> CheckIfExists(User user)
         {
             User searchedUser = await _context.Users.Where(u => u.Username == user.Username).FirstOrDefaultAsync();
+
+            if(searchedUser != null) // setting id by reference, will be handy in many situations like token generation for an example
+            {
+                user.UserId = searchedUser.UserId;
+            }
+            
 
             return searchedUser != null;
         }

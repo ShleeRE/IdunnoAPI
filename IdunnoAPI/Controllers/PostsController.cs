@@ -1,6 +1,7 @@
 ﻿using IdunnoAPI.DAL.Repositories.Interfaces;
 using IdunnoAPI.DAL.Services;
 using IdunnoAPI.DAL.Services.Interfaces;
+using IdunnoAPI.Extensions;
 using IdunnoAPI.Helpers;
 using IdunnoAPI.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -13,7 +14,7 @@ namespace IdunnoAPI.Controllers
     [Route("api/[controller]")]
     [ApiController]
     [Authorize]
-    public class PostsController : ControllerBase
+    public class PostsController : BaseIdunnoController
     {
         private readonly IPostsService _postsService;
         private readonly IPostRepository _posts;
@@ -57,17 +58,18 @@ namespace IdunnoAPI.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> AddAsync([FromBody]Post post)
+        public async Task<ActionResult> AddAsync([FromBody]Post post) // this.GetCallerId() because even if userId will be passed in request we will ignore it, we don't want it from clientside.
         {
+            post.UserId = this.GetCallerId();
             int newPostID = await _posts.AddPostAsync(post);
             return Created($"api/Posts/{newPostID}", post);
         }
 
-        [Route("{postID}")]
+        [Route("{postId}")]
         [HttpDelete]
-        public async Task<ActionResult> DeleteAsync([FromRoute]int postID)
+        public async Task<ActionResult> DeleteAsync([FromRoute]int postId)
         {
-            await _posts.DeletePostAsync(postID);
+            await _posts.DeletePostAsync(postId);
 
             return Ok(); // to check
         }
