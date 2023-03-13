@@ -4,8 +4,8 @@ namespace IdunnoAPI.DAL.Repositories.Interfaces
 {
     public interface IUserRepository : IDisposable
     {
-        IEnumerable<User> GetUsers();
-        Task<User> GetUserByIdAsync(int id);
+        Task<string> GetUserNameAsync(int userId);
+        Task<User> GetUserByIdAsync(int userId);
         Task<bool> CheckIfExists(User user);
         Task<bool> AddUserAsync(User user);
         Task<bool> DeleteUserAsync(int userId);
