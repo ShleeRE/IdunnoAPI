@@ -29,7 +29,8 @@ namespace IdunnoAPI.DAL.Repositories
             User shipper = new User { UserId = msg.ShipperId };
             User receiver = new User { UserId = msg.ReceiverId };
 
-            if(_users.CheckIfExists(shipper).Result || _users.CheckIfExists(receiver).Result)
+            if(_users.FindUserAsync(u=>u.UserId == shipper.UserId).Result == null 
+                || _users.FindUserAsync(u => u.UserId == receiver.UserId).Result == null)
             {
                 throw new RequestException(StatusCodes.Status500InternalServerError, "Couldn't send your message!");
             }

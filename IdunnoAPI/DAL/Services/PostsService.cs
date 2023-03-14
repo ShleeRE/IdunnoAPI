@@ -2,6 +2,7 @@
 using IdunnoAPI.DAL.Repositories.Interfaces;
 using IdunnoAPI.DAL.Services.Interfaces;
 using IdunnoAPI.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace IdunnoAPI.DAL.Services
 {
@@ -15,6 +16,13 @@ namespace IdunnoAPI.DAL.Services
         public PostsService(IdunnoDbContext context)
         {
             Posts = new PostRepository(context);
+        }
+
+        public async Task<IEnumerable<Post>> GetPostsByMatch(string match)
+        {
+            IQueryable<Post> posts = Posts.GetPostsAsQueryable();
+
+            return await posts.Where(p => p.PostTitle.Contains(match) || p.PostDescription.Contains(match)).ToListAsync();
         }
 
         protected virtual void Dispose(bool disposing)

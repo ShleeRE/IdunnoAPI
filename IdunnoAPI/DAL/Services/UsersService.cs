@@ -26,17 +26,24 @@ namespace IdunnoAPI.DAL.Services
 
         public async Task<string> AuthenticateUser(User user, HttpResponse response)
         {
-            await Users.CheckIfExists(user);
+            User foundUser = await Users.FindUserAsync(u => u.Username == user.Username && u.Password == user.Password);
 
-            User foundUser = await Users.GetUserByIdAsync(user.UserId);
-
-            if(foundUser.Password != user.Password) { throw new RequestException(StatusCodes.Status401Unauthorized, "Provided credentials are invalid.");}
+            if (foundUser == null) throw new RequestException(StatusCodes.Status401Unauthorized, "Provided credentials are invalid.");
 
             string token = _tk.GenerateToken(user);
 
             _tk.SpreadToken(token, response);
 
             return token;
+        }
+
+        public async Task<string> GetUserNameAsync(int userId)
+        {
+            User foundUser = await Users.FindUserAsync(u => u.UserId == userId);
+
+            if (foundUser == null) throw new RequestException(StatusCodes.Status404NotFound, "User could not be found.");
+
+            return foundUser.Username;
         }
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////
